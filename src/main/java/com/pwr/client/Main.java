@@ -7,89 +7,43 @@ import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) throws IOException, NotBoundException {
-        //Creating a client
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your nick-name for game session: ");
-        String userName = scanner.nextLine();
+        // Creating a client
+        ClientInterface clientInterface = new ClientInterface();
+        String userName = clientInterface.promptUserName();
         String userToken = UUID.randomUUID() + "@" + userName;
 
+        // Getting access to Remote object PlayerFeaturesInterface
         Registry registry = LocateRegistry.getRegistry("localhost",9090);
         PlayerFeaturesInterface player = (PlayerFeaturesInterface) registry.lookup("Player");
 
+        // Creating connection with server
         Socket socket = new Socket("localhost",9091);
-        Client client = new Client(socket,userToken);
-        client.sendMessage(userToken);
+        ClientCommunicator communicator = new ClientCommunicator(socket);
+        communicator.sendMessage(userToken);
 
-        //Get message are we get connection to the server with our name
-        client.listenMessage();
+        // Getting message that connection with server is success
+        communicator.listenMessage();
 
-        //sent role
-        scanner = new Scanner(System.in);
-        System.out.println("If u want to be a player pls type and send 'p'");
-        System.out.println("If u want to be a watcher, pls type and send 'w'");
-        System.out.println("Enter the role,that u want to be: ");
-        String role = scanner.nextLine();
-        client.sendMessage(role);
+        // Choosing role (player or watcher)
+        ClientController controller = new ClientController(clientInterface, communicator, userToken, player);
+        controller.handleUserRole();
 
-        if(role.equals("p"))
-        {
-            System.out.println("You have chosen player mode");
-            client.playerMenuPanel();
-            Scanner scannerOption = new Scanner(System.in);
-            String option = scannerOption.nextLine();
-            while(!option.equals("0")) {
-                switch (option) {
-                    case "1":
-                        client.createRoomPanel(player);
-                        break;
-                    case "2":
-                        client.checkListOfRoomsPanel(player);
-                        break;
-                    case "3":
-                        client.joinGameRoomPanel(player);
-                        break;
-                    case "4":
-                        client.leaveGameRoomPanel(player);
-                        break;
-                    case "5":
-                        client.deleteGameRoomPanel(player);
-                        break;
-                    default:
-                        System.out.println("There is not available option of number - " + option + ".Please enter a number of option from '1' to '5' to continue the program!");
-                        break;
-                }
-                System.out.println();
-                System.out.println();
-                client.playerMenuPanel();
-                option = scannerOption.nextLine();
-            }
-        }
-        else if(role.equals("w"))
-        {
-            System.out.println("You have chosen watcher mode");
-            client.watcherPanel(player,client);
-        }
-
-        //sent next requests
+        // sent next requests
         while(true)
         {
-
-            //System.out.println("what u would like to do?(if 'exit' type it)");
             System.out.println("Type 'exit' to disconnect with program:");
-            String request = scanner.nextLine();
+            String request = clientInterface.getUserOption();
             if(request.equals("exit") || request.equals("quit"))
             {
-                client.sendMessage(request);
+                communicator.sendMessage(request);
                 break;
             }
-            //client.sendMessage(request);
+
         }
-        client.closeEverything(socket,client.getBufferedReader(),client.getBufferedWriter());
+        communicator.closeEverything(socket,communicator.getBufferedReader(),communicator.getBufferedWriter());
     }
 }

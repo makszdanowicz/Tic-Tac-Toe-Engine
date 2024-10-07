@@ -34,6 +34,11 @@
                                 <include>com/pwr/common/**</include>
                             </includes>
                             <finalName>Server</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.pwr.server.Main</mainClass>
+                                </manifest>
+                            </archive>
                         </configuration>
                     </execution>
                     <execution>
@@ -48,12 +53,18 @@
                                 <include>com/pwr/client/**</include>
                                 <include>com/pwr/common/**</include>
                             </includes>
-                        <finalName>Client</finalName>
+                            <finalName>Client</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.pwr.client.Main</mainClass>
+                                </manifest>
+                            </archive>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
 
 </project>
