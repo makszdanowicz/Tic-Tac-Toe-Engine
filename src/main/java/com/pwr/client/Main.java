@@ -35,7 +35,7 @@ public class Main {
         // sent next requests
         while(true)
         {
-            System.out.println("Type 'exit' to disconnect with program:");
+            System.out.println("Type 'exit' to close program:");
             String request = clientInterface.getUserOption();
             if(request.equals("exit") || request.equals("quit"))
             {

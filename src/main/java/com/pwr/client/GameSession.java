@@ -169,24 +169,4 @@ public class GameSession {
         }
         System.out.println();
     }
-
-    /*
-    // Printing map at the moment of the game
-    public void printMap() throws RemoteException {
-        String[][] map = player.getMap(connectedRoomToken);
-        showMap(map);
-        System.out.println();
-    }
-     */
-
-    private void showMap(String[][] map) {
-        System.out.println("-------------");
-        for (String[] strings : map) {
-            for (int j = 0; j < map.length; j++) {
-                System.out.print("| " + strings[j] + " ");
-            }
-            System.out.println("|");
-            System.out.println("|-----------|");
-        }
-    }
 }

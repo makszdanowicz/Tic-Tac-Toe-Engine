@@ -22,7 +22,7 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>create-jar-package1</id>
+                        <id>create-server-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -33,7 +33,7 @@
                                 <include>com/pwr/server/**</include>
                                 <include>com/pwr/common/**</include>
                             </includes>
-                            <finalName>Server</finalName>
+                            <finalName>server</finalName>
                             <archive>
                                 <manifest>
                                     <mainClass>com.pwr.server.Main</mainClass>
@@ -42,7 +42,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>create-jar-package2</id>
+                        <id>create-client-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -53,7 +53,7 @@
                                 <include>com/pwr/client/**</include>
                                 <include>com/pwr/common/**</include>
                             </includes>
-                            <finalName>Client</finalName>
+                            <finalName>client</finalName>
                             <archive>
                                 <manifest>
                                     <mainClass>com.pwr.client.Main</mainClass>

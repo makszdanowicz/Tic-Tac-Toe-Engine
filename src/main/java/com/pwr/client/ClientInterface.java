@@ -38,7 +38,7 @@ public class ClientInterface {
         System.out.println();
         System.out.println("{----------------------------------------------------------------}");
         System.out.println("You can connect and view a game between 2 players in chosen room");
-        System.out.println("If you want to see the list of game rooms  to connect to one of them type '1':");
+        System.out.println("If you want to see the list of game rooms{remember,that if want to connect to one of them, copy token of room}, type '1':");
         System.out.println("If you want to close the program type '0' :");
     }
 

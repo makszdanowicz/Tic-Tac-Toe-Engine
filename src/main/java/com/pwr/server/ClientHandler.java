@@ -10,17 +10,17 @@ public class ClientHandler implements Runnable{
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-    private String clientTocken;
+    private String clientToken;
     private Player player;
 
 
-    public ClientHandler(Socket clientSocket,String clientTocken,Player player)
+    public ClientHandler(Socket clientSocket,String clientToken,Player player)
     {
         try{
             this.socket = clientSocket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));//charecter stream, not a byte stream
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.clientTocken = clientTocken;
+            this.clientToken = clientToken;
             this.player = player;
         } catch (IOException e)
         {
@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         System.out.println("Thread started");
-        String clientUserName = clientTocken.substring(clientTocken.indexOf("@")+1);
+        String clientUserName = clientToken.substring(clientToken.indexOf("@")+1);
         try {
             //send a message that server got a name and return it with information that connection is good
             sendMessage(clientUserName + " you have connected successfully to server!");
