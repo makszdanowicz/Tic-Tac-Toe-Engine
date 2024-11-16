@@ -1,6 +1,8 @@
 package com.pwr.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameRoom {
@@ -57,8 +59,8 @@ public class GameRoom {
         else {
             playersInfo.put(playerToken,"O");
         }
-        System.out.println("Added new player ( " + playerToken.substring(playerToken.indexOf("@")+1) + " ) with token: " + playerToken);
-        System.out.println("Number of players in game room - " +getName()+ ": " + playersInfo.size());
+        System.out.println("Added new player ( " + playerToken.substring(playerToken.indexOf("@")+1) + " )[" + playerToken + "] to game room with name - " + name + "[" + token + "]");
+        System.out.println("Number of players in game room - " + name + "[" + token + "]:" + playersInfo.size());
         return 1;
     }
 
@@ -98,6 +100,8 @@ public class GameRoom {
     public void removePlayer(String playerToken)
     {
         playersInfo.remove(playerToken);
+        System.out.println("Kicked " + playerToken + " from room - " + name + "[" + token + "]");
+        restart();
     }
 
     public String[][] getMap()
@@ -120,12 +124,10 @@ public class GameRoom {
             }
         }
         System.out.println("Next turn has: " + getTokenOfTurnPlayer());
-        //System.out.println("Player turn: " + getTokenOfTurnPlayer());
         return status;
     }
 
-    public int checkCombination(String playerFigure)
-    {
+    public int checkCombination(String playerFigure) {
         int result = game.showResultOfGame(playerFigure);
         if(result == 1)
         {
@@ -149,18 +151,11 @@ public class GameRoom {
         return -1;//error
     }
 
-    public int restart(String playerToken)
-    {
-        playersInfo.remove(playerToken);
-        System.out.println("Kicked " + playerToken.substring(playerToken.indexOf("@")+1) + " from room - " + getName());
-        if(playersInfo.size() == 0)
-        {
-            TicTacToeGame game1 = new TicTacToeGame();
-            game = game1;
-            System.out.println("restart: Create a new clear board for room - " + getName());
-            return 1;
+    private void restart() {
+        if(playersInfo.isEmpty()){
+            game.createMap();
+            System.out.println("restart: Create a new clear board for room - " + name + "[" + token + "]");
         }
-        return 0;
     }
     @Override
     public String toString() {

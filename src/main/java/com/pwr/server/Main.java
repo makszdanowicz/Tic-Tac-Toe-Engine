@@ -11,6 +11,7 @@ public class Main {
         try {
             ServerSocket serverSocket = new ServerSocket(Server.port);
             Server server = new Server(serverSocket);
+            System.out.println("Server is running");
 
             Player player = new Player();
             server.registry = LocateRegistry.createRegistry(Server.rmiPort);

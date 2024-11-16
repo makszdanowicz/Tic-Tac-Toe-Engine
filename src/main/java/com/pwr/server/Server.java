@@ -26,10 +26,10 @@ public class Server {
             while(!serverSocket.isClosed())
             {
                 Socket socket = serverSocket.accept();
-                System.out.println("A new client has connected");
+                System.out.println("A new client has connected to server");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String userToken = reader.readLine();
-                System.out.println(userToken);
+                System.out.println("A token has been generated for the new client: " + userToken);
                 ClientHandler clientThread = new ClientHandler(socket,userToken,player);
                 clients.add(clientThread);
                 Thread thread = new Thread(clientThread);

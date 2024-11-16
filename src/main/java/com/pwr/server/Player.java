@@ -9,8 +9,7 @@ import java.util.*;
 public class Player extends UnicastRemoteObject implements PlayerFeaturesInterface {
 
     private static HashMap<String, GameRoom> gameRooms= new HashMap<>();
-
-    //UnicastRemoteObject ze nasze objekty tej klasy moga przekazywac sie do klienta  po RMI Serveru
+    // UnicastRemoteObject is used, because objects from this class could be transfer to client using RMI server
     public Player () throws RemoteException
     {
         super();
@@ -20,13 +19,10 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
         String roomToken = UUID.randomUUID().toString() + "@" + roomName;
         if(gameRooms.containsKey(roomToken))
         {
-            //System.out.println("ERROR!Can't create a new game room using this token, cause room with this token already exists!");
             return "ERROR!Can't create a new game room using this token, cause room with this token already exists!";
         }
         else {
             gameRooms.put(roomToken, new GameRoom(roomName,roomToken));
-            //System.out.println("Your room named " + roomName + " was created!");
-            //System.out.println("If u want to connect to this room use this token: " + roomToken);
             return "The room named " + roomName + " was created!\n" + "If u want to connect to this room use this token: " + roomToken;
         }
 
@@ -35,45 +31,42 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
     @Override
     public int joinGameRoom(String playerToken, String roomToken) throws RemoteException {
         /*
-           result -1 - ERROR! The room with provided token doesn't exit.Try again!
-           result 0 - You can't connect to this room, because lobby is full. Try again later or connect to other room.
-           result 1 - You have successfully connected to room!
+           resultOfJoiningToGameRoom -1 - ERROR! The room with provided token doesn't exit.Try again!
+           resultOfJoiningToGameRoom 0 - You can't connect to this room, because lobby is full. Try again later or connect to other room.
+           resultOfJoiningToGameRoom 1 - You have successfully connected to room!
          */
-        int result = -1;
+        int resultOfJoiningToGameRoom = -1;
         for(String key : gameRooms.keySet())
         {
             if(key.equals(roomToken))
             {
                 GameRoom room = gameRooms.get(roomToken);
-                int status = room.addNewPlayer(playerToken);
-                if(status == 0)
+                int statusOfJoining = room.addNewPlayer(playerToken);
+                if(statusOfJoining == 0)
                 {
-                    result = 0;
                     return 0;
-                } else if (status == 1) {
-                    result = 1;
+                } else if (statusOfJoining == 1) {
                     return 1;
                 }
             }
         }
-        return result;
+        return resultOfJoiningToGameRoom;
     }
 
     @Override
     public int leaveGameRoom(String playerToken, String roomToken) throws RemoteException {
         if(!gameRooms.containsKey(roomToken))
         {
-            return -1;
-            //nie ma takiej room
+            return -1; // There is no room with this token, so it's impossible to leave
         }
         GameRoom room = gameRooms.get(roomToken);
         if(!room.hasPlayer(playerToken))
         {
-            return 0;
-            //nie ma takiego gracza w tej room
+            return 0; // There is no player with this token in this room
+
         }
         room.removePlayer(playerToken);
-        //zostal usuniety z room
+        // Player is successfully was kicked from this room
         return 1;
 
     }
@@ -89,7 +82,6 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
         }
         for(Map.Entry<String,GameRoom> entry: gameRooms.entrySet())
         {
-            //System.out.println("name: " + entry.getKey() + " | token: " + entry.getValue());
             String string = "name: " + entry.getValue().getName() + " | number of player: " + entry.getValue().getPlayersNumber()+ " | token: " + entry.getKey();
             gameRoomsList.add(string);
         }
@@ -106,14 +98,13 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
                 return "Room with token: " + roomToken +" was successfully deleted!";
             }
         }
-        return "Server don't have any room with token: " + roomToken + ".Try again.";
+        return "Server don't have any room with provided token: " + roomToken + ".Try again.";
     }
 
     @Override
     public int getNumberOfPlayersInRoom(String roomToken) throws RemoteException {
         GameRoom room = gameRooms.get(roomToken);
-        int numberOfPlayersInSession = room.getPlayersNumber();
-        return numberOfPlayersInSession;
+        return room.getPlayersNumber();
     }
 
     @Override
@@ -143,50 +134,40 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
     @Override
     public boolean turnStatus(String roomToken,String playerToken) throws RemoteException {
         GameRoom room = gameRooms.get(roomToken);
-        if(room.getTokenOfTurnPlayer().equals(playerToken))
-        {
-            return true;
-        }
-        else return false;
+        return room.getTokenOfTurnPlayer().equals(playerToken);
     }
 
     @Override
     public int makeMove(String roomToken, String playerToken, String playerFigure, int moveNumber) throws RemoteException {
         GameRoom room = gameRooms.get(roomToken);
-        int status = room.makeMove(playerToken,playerFigure,moveNumber);
         /*
         1 - EVERYTHING IS OKAY
         0 - ON THIS POSITION FIGURE IS ALREADY
         -1 - ERROR There is no slot with this number
          */
-        return status;
+        return room.makeMove(playerToken,playerFigure,moveNumber);
     }
 
 
     @Override
     public int checkCombination(String roomToken,String playerFigure) throws RemoteException {
         GameRoom room = gameRooms.get(roomToken);
-        int result = room.checkCombination(playerFigure);
         //5 - game over X won
         //1 - game over O won
         //0 - draw
         //2 - nextMove
-        return result;
+        return room.checkCombination(playerFigure);
     }
 
-    @Override
-    public int restartGame(String roomToken, String playerToken) throws RemoteException {
-        GameRoom room = gameRooms.get(roomToken);
-        return room.restart(playerToken);
-    }
+//    @Override
+//    public int restartGame(String roomToken, String playerToken) throws RemoteException {
+//        GameRoom room = gameRooms.get(roomToken);
+//        return room.restart(playerToken);
+//    }
 
     @Override
     public boolean hasRoomWithToken(String roomToken) throws RemoteException {
-        if(gameRooms.containsKey(roomToken))
-        {
-            return true;
-        }
-        return false;
+        return gameRooms.containsKey(roomToken);
     }
 
 }

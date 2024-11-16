@@ -30,16 +30,16 @@ public class ClientHandler implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println("Thread started");
+        System.out.println("Thread started for the new client with token: " + clientToken);
         String clientUserName = clientToken.substring(clientToken.indexOf("@")+1);
         try {
             //send a message that server got a name and return it with information that connection is good
             sendMessage(clientUserName + " you have connected successfully to server!");
 
             //reading a role from client
-            handleRoleSelection(clientUserName);
+            handleRoleSelection();
 
-            handleClientRequests(clientUserName);
+            handleClientRequests();
 
             // When client leaving app - closing thread for this client
             closeEverything(socket,bufferedReader,bufferedWriter);
@@ -55,25 +55,25 @@ public class ClientHandler implements Runnable{
         bufferedWriter.flush();
     }
 
-    private void handleRoleSelection(String clientUserName) throws IOException {
+    private void handleRoleSelection() throws IOException {
         String roleLetter = bufferedReader.readLine();
         if(roleLetter.equals("p") || roleLetter.equals("P")) {
             String role = "player";
-            System.out.println(clientUserName + " have chosen " + role + " mode" );
+            System.out.println(clientToken + " have chosen " + role + " mode" );
         }
         else if (roleLetter.equals("w") || roleLetter.equals("W")) {
             String role = "watcher";
-            System.out.println(clientUserName + " have chosen " + role + " mode" );
+            System.out.println(clientToken + " have chosen " + role + " mode" );
         }
     }
 
-    private void handleClientRequests(String clientUserName) throws IOException {
+    private void handleClientRequests() throws IOException {
         while (true) {
             String request = bufferedReader.readLine();
-            System.out.println(clientUserName + " request was: " + request);
+            //System.out.println(clientUserName + " request was: " + request);  !!!!!!!!!!!!!!!!!!!
             if (request.equals("exit") || request.equals("quit")) {
-                System.out.println(clientUserName + " request was: " + request);
-                System.out.println(clientUserName + " disconnected with server");
+                System.out.println(clientToken + " request was: " + request);
+                System.out.println(clientToken + " disconnected from server");
                 break;
             } else if (request.startsWith("getPlayersInfo")) {
                 getPlayersInfo(request);

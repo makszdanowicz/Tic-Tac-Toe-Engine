@@ -93,10 +93,9 @@ public class TicTacToeGame {
         else {
             //Checking does map have any numbers
             int numberCounter = 0;
-            for(int i = 0; i < map.length; i++)
-            {
-                for(int j = 0; j < map[i].length; j++) {
-                    if (!map[i][j].equals("X") && !map[i][j].equals("O")) {
+            for (String[] strings : map) {
+                for (String string : strings) {
+                    if (!string.equals("X") && !string.equals("O")) {
                         numberCounter++;
                     }
                 }
@@ -107,7 +106,7 @@ public class TicTacToeGame {
                 return 0;
             }
             else {
-                System.out.println("Next moves, cause game has free slots");
+                //System.out.println("Next moves, cause game has free slots");
                 return 2;
             }
         }
@@ -117,10 +116,9 @@ public class TicTacToeGame {
     {
         //Calkowita liczba kombinacji = 3+3+2 =8
         //sprawdzamy kombinacje w linijce
-        for(int i = 0; i < map.length; i++)
-        {
+        for (String[] strings : map) {
             int j = 0;
-            if(map[i][j].equals(type) && map[i][j+1].equals(type) && map[i][j+2].equals(type)) {
+            if (strings[j].equals(type) && strings[j + 1].equals(type) && strings[j + 2].equals(type)) {
                 return true;
             }
         }

@@ -149,11 +149,12 @@ public class GameSession {
         } else if (resultOfCombination == 5) {
             printMap();
             System.out.println("End of the game. X won!");
-        } else if (resultOfCombination ==0) {
+        } else if (resultOfCombination == 0) {
             printMap();
             System.out.println("End of the game. It's Draw!");
         }
-        player.restartGame(connectedRoomToken,userToken);
+        // player.restartGame(connectedRoomToken,userToken);
+        player.leaveGameRoom(userToken,connectedRoomToken);
         System.out.println("You have been kicked from game room, because game session is over!");
     }
 

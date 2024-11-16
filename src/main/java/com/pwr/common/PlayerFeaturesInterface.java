@@ -18,7 +18,7 @@ public interface PlayerFeaturesInterface extends Remote {
     boolean turnStatus(String roomToken,String playerToken) throws RemoteException;
     int makeMove(String roomToken,String playerToken, String playerFigure, int moveNumber) throws RemoteException;
     int checkCombination(String roomToken,String playerFigure) throws RemoteException;
-    int restartGame(String roomToken,String playerToken) throws RemoteException;
+    //int restartGame(String roomToken,String playerToken) throws RemoteException;
     boolean hasRoomWithToken(String roomToken) throws RemoteException;
 
 
