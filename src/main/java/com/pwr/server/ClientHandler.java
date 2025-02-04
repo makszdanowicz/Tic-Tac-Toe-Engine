@@ -2,8 +2,7 @@ package com.pwr.server;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.rmi.RemoteException;
 
 public class ClientHandler implements Runnable{
 
@@ -11,21 +10,18 @@ public class ClientHandler implements Runnable{
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-    private String clientUserName;
+    private String clientToken;
+    private Player player;
 
-    private String role;
 
-    public ClientHandler(Socket clientSocket,String name)
+    public ClientHandler(Socket clientSocket,String clientToken,Player player)
     {
         try{
             this.socket = clientSocket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));//charecter stream, not a byte stream
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.clientUserName = name;
-            //this.clientUserName = bufferedReader.readLine();
-            //this.role = role;
-            //clientHandlers.add(this);// this represents a ClientHandler object, so we sent information to array list
-            //broadcastMessage("SERVER: " + clientUserName + "has entered a game session!");
+            this.clientToken = clientToken;
+            this.player = player;
         } catch (IOException e)
         {
             closeEverything(socket, bufferedReader, bufferedWriter);
@@ -34,75 +30,106 @@ public class ClientHandler implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println("Thread started");
+        System.out.println("Thread started for the new client with token: " + clientToken);
+        String clientUserName = clientToken.substring(clientToken.indexOf("@")+1);
         try {
-            //sent a message that server got a name and return it with information that connection is good
-            bufferedWriter.write(clientUserName + " you have connected successfully to server!");
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            // send a message that server got a name and return it with information that connection is successes
+            sendMessage(clientUserName + " you have connected successfully to server!");
 
-            //reading a role of person
-            String role = bufferedReader.readLine();
-            System.out.println(clientUserName + " have chosen " + role + " role" );
-            if(role.equals("player"))
-            {
+            // reading a role from client
+            handleRoleSelection();
 
-            } else if (role.equals("watcher")) {
+            handleClientRequests();
 
-            }
-            while (true)
-            {
-                String request = bufferedReader.readLine();
-                if(request.equals("exit") || request.equals("quit"))
-                {
-                    break;
-                }
-                System.out.println(clientUserName + " request was: " + request);
-
-            }
+            // When client leaving app - closing thread for this client
             closeEverything(socket,bufferedReader,bufferedWriter);
-
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
+    private void sendMessage(String message) throws IOException {
+        bufferedWriter.write(message);
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+    }
 
-    /*
-    public void broadcastMessage(String message)
-    {
-        for(com.pwr.client.ClientHandler clientHandler: clientHandlers)
-        {
-            try{
-                if(!clientHandler.clientUserName.equals(clientUserName))
-                {
-                    clientHandler.bufferedWriter.write(message);
-                    clientHandler.bufferedWriter.flush();
-                }
-            }
-            catch (IOException e)
-            {
-                closeEverything(socket, bufferedReader, bufferedWriter);
+    private void handleRoleSelection() throws IOException {
+        String roleLetter = bufferedReader.readLine();
+        if(roleLetter.equals("p") || roleLetter.equals("P")) {
+            String role = "player";
+            System.out.println(clientToken + " have chosen " + role + " mode" );
+        }
+        else if (roleLetter.equals("w") || roleLetter.equals("W")) {
+            String role = "watcher";
+            System.out.println(clientToken + " have chosen " + role + " mode" );
+        }
+    }
+
+    private void handleClientRequests() throws IOException {
+        while (true) {
+            String request = bufferedReader.readLine();
+            if (request.equals("exit") || request.equals("quit")) {
+                System.out.println(clientToken + " request was: " + request);
+                System.out.println(clientToken + " disconnected from server");
+                break;
+            } else if (request.startsWith("getPlayersInfo")) {
+                getPlayersInfo(request);
+            } else if (request.startsWith("getMap")) {
+                getMap(request);
+            } else if (request.startsWith("getCurrentPlayerTurn")) {
+                getCurrentPlayerTurn(request);
+            } else if (request.startsWith("checkCombinationX")) {
+                checkCombination(request);
             }
         }
     }
 
-
-
-    public void removeClientHandler()
-    {
-        clientHandlers.remove(this);
-        broadcastMessage("SERVER: " + clientUserName + " has left the group session");
+    private void getPlayersInfo(String request) throws IOException {
+        String roomToken = request.split(":")[1];
+        String player1 = player.getTokenOfPlayerWhoTurn(roomToken);
+        String player2 = player.getTokenOfOpponent(roomToken,player1);
+        sendMessage(player1 + "," + player2);
     }
 
-     */
+    private void getMap(String request) throws IOException {
+        String roomToken = request.split(":")[1];
+        String[][] map = player.getMap(roomToken);
+        StringBuilder stringBuilder = new StringBuilder();
+        for(String[] row : map)
+        {
+            for(String element : row)
+            {
+                stringBuilder.append(element).append(" ");
+            }
+            stringBuilder.append("*");
+        }
+        sendMessage(stringBuilder.toString());
+    }
+
+    private void getCurrentPlayerTurn(String request) throws IOException {
+        String roomToken = request.split(":")[1];
+        String currentPlayerToken = player.getTokenOfPlayerWhoTurn(roomToken);
+        sendMessage(currentPlayerToken);
+    }
+
+    private void checkCombination(String request) throws IOException {
+        String roomToken = request.split(":")[1];
+        int combinationX = player.checkCombination(roomToken,"X");
+        String message;
+        switch (combinationX){
+            case 1 -> message = "Game over. O wins!";
+            case 5 -> message = "Game over. X wins!";
+            case 0 -> message = "It's draw!";
+            default -> message = "Players have next moves!";
+        }
+        sendMessage(message);
+    }
+
 
     public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter)
     {
-        //removeClientHandler();
         try{
             if(bufferedReader != null)
             {

@@ -14,4 +14,57 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>create-server-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>server</classifier>
+                            <includes>
+                                <include>com/pwr/server/**</include>
+                                <include>com/pwr/common/**</include>
+                            </includes>
+                            <finalName>server</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.pwr.server.Main</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-client-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>client</classifier>
+                            <includes>
+                                <include>com/pwr/client/**</include>
+                                <include>com/pwr/common/**</include>
+                            </includes>
+                            <finalName>client</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.pwr.client.Main</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
 </project>
