@@ -48,12 +48,13 @@ public class TicTacToeGame {
 
     public int makeMove(String figure, int move)
     {
+        // Validate move
         if(move > -1 && move < 9)
         {
             if(move < 3)
             {
                 map[0][move] = figure;
-                return 1;//EVERYTHING IS OKAY
+                return 1;// move is correct
             }
             else
             {
@@ -61,20 +62,20 @@ public class TicTacToeGame {
                 int j = move % 3;
                 if(map[i][j].equals("X") || map[i][j].equals("O"))
                 {
-                    return 0;//ON THIS POSITION FIGURE IS ALREADY
+                    return 0;// position is taken by other figure
                 }
                 else {
                     map[i][j] = figure;
                 }
             }
-            return 1;//EVERYTHING IS OKAY
+            return 1;
         }
-        return -1;//There is no slot with this number
+        return -1;// There is no slot with this number
     }
 
     public int showResultOfGame(String type)
     {
-        //Checking maybe somebody wins(X or O)
+        //Checking is some player win the game(X or O)
         if(checkCombination("X"))
         {
             System.out.println("Game over! X wins");
@@ -85,7 +86,7 @@ public class TicTacToeGame {
             System.out.println("Game over! O wins");
             return 1;
         }
-        //Checking maybe game is draw or not completed
+        //Checking is draw or not completed game
         else {
             //Checking does map have any numbers
             int numberCounter = 0;
@@ -99,19 +100,18 @@ public class TicTacToeGame {
             if(numberCounter == 0)
             {
                 System.out.println("Draw!The map don't have free slots for move");
-                return 0;
+                return 0; // game is over because of draw
             }
             else {
-                //System.out.println("Next moves, cause game has free slots");
-                return 2;
+                return 2; // game is continued
             }
         }
     }
 
     private boolean checkCombination(String type)
     {
-        //Calkowita liczba kombinacji = 3+3+2 =8
-        //sprawdzamy kombinacje w linijce
+        // All number of possible combinations = 3+3+2 = 8
+        // checking is any raw combination has success
         for (String[] strings : map) {
             int j = 0;
             if (strings[j].equals(type) && strings[j + 1].equals(type) && strings[j + 2].equals(type)) {
@@ -119,7 +119,7 @@ public class TicTacToeGame {
             }
         }
 
-        //sprawdzamy kombinacje w dol
+        // checking is any column combination has success
         for(int j = 0; j < map.length; j++)
         {
             int i = 0;
@@ -129,7 +129,7 @@ public class TicTacToeGame {
             }
         }
 
-        //sprawdzamy kombinacje na diagonal
+        // checking is any combination of diagonals has success
         return map[0][0].equals(type) && map[1][1].equals(type) && map[2][2].equals(type) || map[2][0].equals(type) && map[1][1].equals(type) && map[0][2].equals(type);
     }
 }

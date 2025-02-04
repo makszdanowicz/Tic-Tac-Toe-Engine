@@ -54,7 +54,7 @@ public class GameRoom {
         if(playersInfo.isEmpty())
         {
             playersInfo.put(playerToken,"X");
-            setTokenOfTurnPlayer(playerToken); //SET WHO WILL BE TURN FIRST, BY SENDING HIS TOKEN
+            setTokenOfTurnPlayer(playerToken); // Set whose turn will be first
         }
         else {
             playersInfo.put(playerToken,"O");
@@ -70,8 +70,7 @@ public class GameRoom {
 
     }
 
-    public String getOpponentToken(String playerToken)
-    {
+    public String getOpponentToken(String playerToken) {
         for(Map.Entry<String,String> entry : playersInfo.entrySet())
         {
             if(!entry.getKey().equals(playerToken))
@@ -81,8 +80,8 @@ public class GameRoom {
         }
         return playerToken;
     }
-    public String getPlayerFigure(String playerToken)
-    {
+
+    public String getPlayerFigure(String playerToken) {
         for(Map.Entry<String,String> entry : playersInfo.entrySet())
         {
             if(entry.getKey().equals(playerToken))
@@ -144,7 +143,7 @@ public class GameRoom {
             //nextMoves
             return 2;
         }
-        return -1;//error
+        return -1; //error
     }
 
     private void restart() {

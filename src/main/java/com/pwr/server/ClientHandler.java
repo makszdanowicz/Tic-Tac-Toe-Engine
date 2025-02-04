@@ -33,10 +33,10 @@ public class ClientHandler implements Runnable{
         System.out.println("Thread started for the new client with token: " + clientToken);
         String clientUserName = clientToken.substring(clientToken.indexOf("@")+1);
         try {
-            //send a message that server got a name and return it with information that connection is good
+            // send a message that server got a name and return it with information that connection is successes
             sendMessage(clientUserName + " you have connected successfully to server!");
 
-            //reading a role from client
+            // reading a role from client
             handleRoleSelection();
 
             handleClientRequests();
@@ -70,7 +70,6 @@ public class ClientHandler implements Runnable{
     private void handleClientRequests() throws IOException {
         while (true) {
             String request = bufferedReader.readLine();
-            //System.out.println(clientUserName + " request was: " + request);  !
             if (request.equals("exit") || request.equals("quit")) {
                 System.out.println(clientToken + " request was: " + request);
                 System.out.println(clientToken + " disconnected from server");

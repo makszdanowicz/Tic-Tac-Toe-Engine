@@ -66,7 +66,6 @@ public class ClientController {
                 option = clientInterface.getUserOption();
             }else System.out.println("Invalid number.Try again.");
         }
-        // Closing program
     }
 }
 
