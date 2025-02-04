@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GameRoom {
-    private String name;
-    private String token;
-    private HashMap<String, String> playersInfo;
+    private final String name;
+    private final String token;
+    private final HashMap<String, String> playersInfo;
     private TicTacToeGame game;
     private String tokenOfTurnPlayer;
 
@@ -51,10 +51,10 @@ public class GameRoom {
         {
             return 0;
         }
-        if(playersInfo.size() == 0)
+        if(playersInfo.isEmpty())
         {
             playersInfo.put(playerToken,"X");
-            setTokenOfTurnPlayer(playerToken);//SET WHO WILL BE TURN FIRST, BY SENDING HIS TOKEN
+            setTokenOfTurnPlayer(playerToken); //SET WHO WILL BE TURN FIRST, BY SENDING HIS TOKEN
         }
         else {
             playersInfo.put(playerToken,"O");
@@ -66,11 +66,7 @@ public class GameRoom {
 
     public boolean hasPlayer(String playerToken)
     {
-        if(playersInfo.containsKey(playerToken))
-        {
-            return true;
-        }
-        return false;
+        return playersInfo.containsKey(playerToken);
 
     }
 

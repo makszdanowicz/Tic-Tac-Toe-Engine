@@ -30,7 +30,6 @@ public class ClientController {
             System.out.println("You have chosen watcher mode");
             handleWatcherMenu();
         } else System.out.println("Invalid role selected.");
-
     }
 
     private void handlePlayerMenu() throws RemoteException {

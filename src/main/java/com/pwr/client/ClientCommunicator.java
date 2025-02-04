@@ -35,12 +35,12 @@ public class ClientCommunicator {
             bufferedWriter.newLine();
             bufferedWriter.flush();
         } catch (IOException e) {
-            closeEverything(socket,bufferedReader,bufferedWriter);
+            closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
 
     public String sendWatcherMessage(String message, String roomToken) throws IOException {
-        bufferedWriter.write(message+":"+roomToken);
+        bufferedWriter.write(message + ":" + roomToken);
         bufferedWriter.newLine();
         bufferedWriter.flush();
 

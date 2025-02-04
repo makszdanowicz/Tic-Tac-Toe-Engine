@@ -70,7 +70,7 @@ public class ClientHandler implements Runnable{
     private void handleClientRequests() throws IOException {
         while (true) {
             String request = bufferedReader.readLine();
-            //System.out.println(clientUserName + " request was: " + request);  !!!!!!!!!!!!!!!!!!!
+            //System.out.println(clientUserName + " request was: " + request);  !
             if (request.equals("exit") || request.equals("quit")) {
                 System.out.println(clientToken + " request was: " + request);
                 System.out.println(clientToken + " disconnected from server");

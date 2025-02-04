@@ -25,7 +25,7 @@ public class WatcherService {
         {
             System.out.println(room);
         }
-        if(gameRoomsList.size() == 0){
+        if(gameRoomsList.isEmpty()){
             System.out.println("No rooms have created yet.Check later list of rooms.");
         }
         else{
@@ -34,7 +34,7 @@ public class WatcherService {
     }
 
     private void joinGameRoom() throws IOException {
-        System.out.println("Type a token of Game room that u want to view( or if no rooms created yet type anything else to update info):");
+        System.out.println("Type a token of Game room that u want to view(if no rooms created yet type anything else to update info):");
         Scanner scanner = new Scanner(System.in);
         roomToken = scanner.nextLine();
         boolean roomExists = player.hasRoomWithToken(roomToken);
@@ -54,6 +54,7 @@ public class WatcherService {
     private void showGame() throws IOException {
         String[] players = communicator.sendWatcherMessage("getPlayersInfo",roomToken).split(",");
         String currentPlayerTurn = communicator.sendWatcherMessage("getCurrentPlayerTurn",roomToken);
+        boolean isPlayersSwitched = true;
         String map = communicator.sendWatcherMessage("getMap", roomToken);
 
         System.out.println("-----------------------------------------------");
@@ -73,16 +74,42 @@ public class WatcherService {
         if(!checkCombinationX.equals("Players have next moves!")) {
             System.out.println("You have been kicked to menu, because game is over!");
         }
-        String turn = currentPlayerTurn;
-        while(turn.equals(currentPlayerTurn))
+//        String turn = currentPlayerTurn;
+//        while(turn.equals(currentPlayerTurn))
+//        {
+//            turn = communicator.sendWatcherMessage("getCurrentPlayerTurn",roomToken);
+//            String checkCombination = communicator.sendWatcherMessage("checkCombinationX",roomToken);
+//            if(!checkCombination.equals("Players have next moves!"))
+//            {
+//                String endMap = communicator.sendWatcherMessage("getMap",roomToken);
+//                System.out.println(endMap.replaceAll("\\*","\n"));
+//                System.out.println("Status of game : " + checkCombination);
+//                System.out.println("You have been kicked to menu, because game is over!");
+//            }
+//        }
+
+        String oldPlayerTurn = currentPlayerTurn;
+        while(checkCombinationX.equals("Players have next moves!"))
         {
-            turn = communicator.sendWatcherMessage("getCurrentPlayerTurn",roomToken);
-            String checkCombination = communicator.sendWatcherMessage("checkCombinationX",roomToken);
-            if(!checkCombination.equals("Players have next moves!"))
+            String turn = communicator.sendWatcherMessage("getCurrentPlayerTurn",roomToken);
+            if(turn.equals(oldPlayerTurn)){
+                isPlayersSwitched = false;
+            }else{
+                isPlayersSwitched = true;
+                oldPlayerTurn = turn;
+            }
+            if(isPlayersSwitched){
+                String currentMap = communicator.sendWatcherMessage("getMap",roomToken);
+                System.out.println(currentMap.replaceAll("\\*","\n"));
+                System.out.println("Current turn: " + turn);
+                System.out.println("-----------------waiting for next player turn------------------------------");
+            }
+            checkCombinationX = communicator.sendWatcherMessage("checkCombinationX",roomToken);
+            if(!checkCombinationX.equals("Players have next moves!"))
             {
                 String endMap = communicator.sendWatcherMessage("getMap",roomToken);
                 System.out.println(endMap.replaceAll("\\*","\n"));
-                System.out.println("Status of game : " + checkCombination);
+                System.out.println("Status of game : " + checkCombinationX);
                 System.out.println("You have been kicked to menu, because game is over!");
             }
         }

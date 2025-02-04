@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PlayerService {
-    private Scanner scanner;
-    private String userToken;
+    private final Scanner scanner;
+    private final String userToken;
     private String connectedRoomToken;
 
     public PlayerService(String userToken)
@@ -26,7 +26,6 @@ public class PlayerService {
     }
 
     public void createRoom(PlayerFeaturesInterface player) throws RemoteException {
-
         System.out.println();
         System.out.println("------------------------------------------------------");
         System.out.println("                   CREATING A GAME ROOM");
@@ -49,7 +48,6 @@ public class PlayerService {
     public void joinGameRoom(PlayerFeaturesInterface player) throws RemoteException {
         System.out.println("Provide a token of game room, in which u want to connect: ");
         String roomToken = scanner.nextLine();
-
         int resultOfJoining = player.joinGameRoom(getUserToken(),roomToken);
         if(resultOfJoining == -1)
         {
@@ -71,7 +69,6 @@ public class PlayerService {
     public void leaveGameRoom(PlayerFeaturesInterface player) throws RemoteException {
         System.out.println("Provide a token of game room that u want to leave");
         String roomToken = scanner.nextLine();
-
         int resultOfLeaving = player.leaveGameRoom(getUserToken(),roomToken);
         if(resultOfLeaving == -1) {
             System.out.println("ERROR! There is no room with this token. Please check the token of the room that u want to leave and try again!");
@@ -85,7 +82,6 @@ public class PlayerService {
     public void deleteGameRoom(PlayerFeaturesInterface player) throws RemoteException {
         System.out.println("Provide a token of game room that u want do delete: ");
         String roomToken = scanner.nextLine();
-
         int numberOfPlayers = player.getNumberOfPlayersInRoom(roomToken);
         if(numberOfPlayers == 0)
         {

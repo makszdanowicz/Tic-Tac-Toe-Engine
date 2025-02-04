@@ -36,18 +36,14 @@ public class TicTacToeGame {
     public void showMap()
     {
         System.out.println("-------------");
-        for(int i = 0; i < map.length; i++)
-        {
-            for(int j = 0; j < map.length; j++)
-            {
-                System.out.print("| "+ map[i][j] + " ");
+        for (String[] strings : map) {
+            for (int j = 0; j < map.length; j++) {
+                System.out.print("| " + strings[j] + " ");
             }
             System.out.println("|");
             System.out.println("|-----------|");
         }
     }
-
-
 
 
     public int makeMove(String figure, int move)
@@ -134,10 +130,6 @@ public class TicTacToeGame {
         }
 
         //sprawdzamy kombinacje na diagonal
-        if(map[0][0].equals(type) && map[1][1].equals(type) && map[2][2].equals(type) || map[2][0].equals(type) && map[1][1].equals(type) && map[0][2].equals(type))
-        {
-            return true;
-        }
-        return false;
+        return map[0][0].equals(type) && map[1][1].equals(type) && map[2][2].equals(type) || map[2][0].equals(type) && map[1][1].equals(type) && map[0][2].equals(type);
     }
 }

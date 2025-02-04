@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Player extends UnicastRemoteObject implements PlayerFeaturesInterface {
 
-    private static HashMap<String, GameRoom> gameRooms= new HashMap<>();
+    private static final HashMap<String, GameRoom> gameRooms= new HashMap<>();
     // UnicastRemoteObject is used, because objects from this class could be transfer to client using RMI server
     public Player () throws RemoteException
     {
@@ -74,7 +74,7 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
     @Override
     public List<String> showRooms() throws RemoteException {
         List<String> gameRoomsList = new ArrayList<>();
-        if(gameRooms.size() == 0)
+        if(gameRooms.isEmpty())
         {
             String string = "No rooms have created yet";
             gameRoomsList.add(string);
@@ -150,7 +150,7 @@ public class Player extends UnicastRemoteObject implements PlayerFeaturesInterfa
 
 
     @Override
-    public int checkCombination(String roomToken,String playerFigure) throws RemoteException {
+    public int checkCombination(String roomToken, String playerFigure) throws RemoteException {
         GameRoom room = gameRooms.get(roomToken);
         //5 - game over X won
         //1 - game over O won

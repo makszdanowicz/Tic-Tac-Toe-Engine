@@ -13,7 +13,7 @@ public class Server {
     public Registry registry;
     public static int rmiPort = 9090;
     public static int port = 9091;
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
     private ArrayList<ClientHandler> clients = new ArrayList<>();
     public Server(ServerSocket serverSocket)
     {
